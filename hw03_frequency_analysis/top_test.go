@@ -43,9 +43,20 @@ var text = `Как видите, он  спускается  по  лестни�
 	посидеть у огня и послушать какую-нибудь интересную сказку.
 		В этот вечер...`
 
+var miniText = `some mini test`
+
 func TestTop10(t *testing.T) {
 	t.Run("no words in empty string", func(t *testing.T) {
 		require.Len(t, Top10(""), 0)
+	})
+
+	t.Run("mini test", func(t *testing.T) {
+		expected := []string{
+			"mini",
+			"some",
+			"test",
+		}
+		require.Equal(t, expected, Top10(miniText))
 	})
 
 	t.Run("positive test", func(t *testing.T) {

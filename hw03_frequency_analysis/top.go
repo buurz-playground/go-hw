@@ -19,12 +19,7 @@ func Top10(text string) []string {
 	fields := strings.Fields(text)
 
 	for _, w := range fields {
-		v, exist := dict[w]
-		if exist {
-			dict[w] = v + 1
-		} else {
-			dict[w] = 1
-		}
+		dict[w]++
 	}
 
 	words := make([]Word, 0, len(dict))
@@ -40,9 +35,16 @@ func Top10(text string) []string {
 		return words[i].Count > words[j].Count
 	})
 
-	words = words[:10]
+	var wordAmount int
+	if len(words) > 10 {
+		wordAmount = 10
+	} else {
+		wordAmount = len(words)
+	}
 
-	topWords := make([]string, 10)
+	words = words[:wordAmount]
+
+	topWords := make([]string, wordAmount)
 	for i, w := range words {
 		topWords[i] = w.Value
 	}
