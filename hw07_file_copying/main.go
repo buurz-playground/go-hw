@@ -1,22 +1,52 @@
 package main
 
 import (
-	"flag"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/urfave/cli/v2"
 )
 
 var (
 	from, to      string
-	limit, offset int64
+	limit, offset uint64
 )
 
-func init() {
-	flag.StringVar(&from, "from", "", "file to read from")
-	flag.StringVar(&to, "to", "", "file to write to")
-	flag.Int64Var(&limit, "limit", 0, "limit of bytes to copy")
-	flag.Int64Var(&offset, "offset", 0, "offset in input file")
-}
-
 func main() {
-	flag.Parse()
-	// Place your code here.
+	app := &cli.App{
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "from",
+				Usage:       "file to read from",
+				Destination: &from,
+			},
+			&cli.StringFlag{
+				Name:        "to",
+				Usage:       "file to write to",
+				Destination: &to,
+			},
+			&cli.Uint64Flag{
+				Name:        "limit",
+				Usage:       "limit of bytes to copy",
+				Destination: &limit,
+			},
+			&cli.Uint64Flag{
+				Name:        "offset",
+				Usage:       "offset in input file",
+				Destination: &offset,
+			},
+		},
+		Action: func(cCtx *cli.Context) error {
+			if err := Copy(from, to, int64(offset), int64(limit)); err != nil {
+				return fmt.Errorf("failed to copy file %w", err)
+			}
+
+			return nil
+		},
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
